@@ -1,0 +1,45 @@
+(trajectory
+
+(:objects ball8 -  ball ball1 -  ball roomb -  room ball6 -  ball ball5 -  ball rooma -  room ball3 -  ball ball7 -  ball right -  gripper ball2 -  ball ball4 -  ball left -  gripper )
+
+(:init (at ball8 rooma) (at ball5 rooma) (free right) (at-robby roomb) (at ball6 rooma) (at ball4 rooma) (at ball2 rooma) (at ball3 rooma) (free left) (at ball1 rooma) (at ball7 rooma))
+
+(:action (move roomb rooma))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball4 rooma) (at ball2 rooma) (at ball3 rooma) (free left) (at ball1 rooma) (at ball7 rooma) (at-robby rooma))
+
+(:action (pick ball4 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at ball7 rooma) (at-robby rooma) (carry ball4 left))
+
+(:action (drop ball4 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at ball7 rooma) (at-robby rooma) (at ball4 rooma) (free left))
+
+(:action (pick ball4 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at ball7 rooma) (at-robby rooma) (carry ball4 left))
+
+(:action (drop ball4 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at ball7 rooma) (at-robby rooma) (at ball4 rooma) (free left))
+
+(:action (pick ball7 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at-robby rooma) (at ball4 rooma) (carry ball7 left))
+
+(:action (drop ball7 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at-robby rooma) (at ball4 rooma) (at ball7 rooma) (free left))
+
+(:action (pick ball7 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at-robby rooma) (at ball4 rooma) (carry ball7 left))
+
+(:action (drop ball7 rooma left))
+
+(:state (at ball8 rooma) (at ball5 rooma) (free right) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at-robby rooma) (at ball4 rooma) (at ball7 rooma) (free left))
+
+(:action (pick ball8 rooma right))
+
+(:state (at ball5 rooma) (at ball6 rooma) (at ball2 rooma) (at ball3 rooma) (at ball1 rooma) (at-robby rooma) (at ball4 rooma) (at ball7 rooma) (free left) (carry ball8 right)))

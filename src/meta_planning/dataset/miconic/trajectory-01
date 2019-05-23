@@ -1,0 +1,45 @@
+(trajectory
+
+(:objects f3 -  floor f0 -  floor p0 -  person f1 -  floor f4 -  floor p3 -  person p4 -  person f2 -  floor f5 -  floor p5 -  person p2 -  person p1 -  person )
+
+(:init (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (lift-at f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5))
+
+(:action (board f4 p3))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (lift-at f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3))
+
+(:action (board f4 p3))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (lift-at f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3))
+
+(:action (down f4 f0))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (lift-at f0))
+
+(:action (up f0 f4))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (lift-at f4))
+
+(:action (board f4 p3))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (lift-at f4))
+
+(:action (down f4 f0))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (lift-at f0))
+
+(:action (board f0 p2))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (lift-at f0) (boarded p2))
+
+(:action (up f0 f4))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (boarded p2) (lift-at f4))
+
+(:action (depart f4 p2))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (lift-at f4))
+
+(:action (down f4 f2))
+
+(:state (destin p2 f4) (above f0 f4) (served p2) (above f2 f5) (origin p1 f2) (destin p1 f4) (origin p0 f3) (origin p2 f0) (above f1 f3) (above f3 f5) (destin p4 f5) (above f0 f1) (destin p3 f2) (above f1 f4) (origin p3 f4) (above f0 f3) (above f0 f2) (above f0 f5) (destin p0 f1) (above f2 f3) (above f1 f5) (above f1 f2) (origin p4 f2) (above f3 f4) (above f2 f4) (origin p5 f1) (above f4 f5) (destin p5 f5) (boarded p3) (lift-at f2)))

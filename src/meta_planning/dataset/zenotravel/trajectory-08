@@ -1,0 +1,45 @@
+(trajectory
+
+(:objects fl1 -  flevel person5 -  person person4 -  person person1 -  person city2 -  city person2 -  person plane1 -  aircraft person3 -  person fl3 -  flevel fl2 -  flevel plane2 -  aircraft fl4 -  flevel city0 -  city city1 -  city fl0 -  flevel )
+
+(:init (in person1 plane2) (in person2 plane2) (at person4 city0) (fuel-level plane2 fl0) (next fl3 fl4) (next fl2 fl3) (at plane1 city1) (next fl0 fl1) (at person3 city1) (at plane2 city1) (in person5 plane2) (fuel-level plane1 fl2) (next fl1 fl2))
+
+(:action (fly plane1 city1 city1 fl2 fl1))
+
+(:state (in person1 plane2) (in person2 plane2) (at person4 city0) (fuel-level plane2 fl0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at person3 city1) (at plane2 city1) (in person5 plane2) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl1))
+
+(:action (refuel plane1 city1 fl1 fl2))
+
+(:state (in person1 plane2) (in person2 plane2) (at person4 city0) (fuel-level plane2 fl0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at person3 city1) (at plane2 city1) (in person5 plane2) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2))
+
+(:action (refuel plane2 city1 fl0 fl1))
+
+(:state (in person1 plane2) (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at person3 city1) (at plane2 city1) (in person5 plane2) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2) (fuel-level plane2 fl1))
+
+(:action (refuel plane2 city1 fl1 fl2))
+
+(:state (in person1 plane2) (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at person3 city1) (at plane2 city1) (in person5 plane2) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2) (fuel-level plane2 fl2))
+
+(:action (debark person1 plane2 city1))
+
+(:state (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at person3 city1) (at plane2 city1) (in person5 plane2) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2) (fuel-level plane2 fl2) (at person1 city1))
+
+(:action (board person3 plane1 city1))
+
+(:state (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at plane2 city1) (in person5 plane2) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2) (fuel-level plane2 fl2) (at person1 city1) (in person3 plane1))
+
+(:action (debark person5 plane2 city1))
+
+(:state (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at plane2 city1) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2) (fuel-level plane2 fl2) (at person1 city1) (in person3 plane1) (at person5 city1))
+
+(:action (board person1 plane1 city1))
+
+(:state (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at plane2 city1) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2) (fuel-level plane2 fl2) (in person3 plane1) (at person5 city1) (in person1 plane1))
+
+(:action (board person5 plane1 city1))
+
+(:state (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at plane2 city1) (next fl1 fl2) (at plane1 city1) (fuel-level plane1 fl2) (fuel-level plane2 fl2) (in person3 plane1) (in person1 plane1) (in person5 plane1))
+
+(:action (zoom plane1 city1 city2 fl2 fl1 fl0))
+
+(:state (in person2 plane2) (at person4 city0) (next fl3 fl4) (next fl2 fl3) (next fl0 fl1) (at plane2 city1) (next fl1 fl2) (fuel-level plane2 fl2) (in person3 plane1) (in person1 plane1) (in person5 plane1) (at plane1 city2) (fuel-level plane1 fl0)))

@@ -1,0 +1,105 @@
+(trajectory
+
+(:objects d -  object b -  object f -  object e -  object c -  object g -  object a -  object )
+
+(:init (on c d) (on b e) (ontable g) (on e f) (clear c) (on d b) (on a g) (ontable f) (clear a) (handempty ))
+
+(:action (unstack c d))
+
+(:state (on b e) (ontable g) (on e f) (clear c) (on d b) (on a g) (ontable f) (clear a) (handempty ) (clear d) (ontable c))
+
+(:action (unstack-ok a g))
+
+(:state (on b e) (ontable g) (on e f) (clear c) (on d b) (ontable f) (clear d) (ontable c) (holding a) (clear g))
+
+(:action (stack-ok a c))
+
+(:state (on b e) (ontable g) (on e f) (on d b) (ontable f) (clear d) (ontable c) (clear g) (clear a) (handempty ) (on a c))
+
+(:action (unstack-ok d b))
+
+(:state (on b e) (ontable g) (on e f) (ontable f) (ontable c) (clear g) (clear a) (on a c) (holding d) (clear b))
+
+(:action (put-down d))
+
+(:state (on b e) (ontable g) (on e f) (ontable f) (ontable c) (clear g) (clear a) (on a c) (clear b) (clear d) (handempty ) (ontable d))
+
+(:action (unstack a c))
+
+(:state (on b e) (ontable g) (on e f) (ontable f) (ontable c) (clear g) (clear a) (clear b) (clear d) (handempty ) (ontable d) (clear c) (ontable a))
+
+(:action (pick-up g))
+
+(:state (on b e) (on e f) (ontable f) (ontable c) (clear a) (clear b) (clear d) (ontable d) (clear c) (ontable a) (holding g))
+
+(:action (stack g c))
+
+(:state (on b e) (on e f) (ontable f) (ontable c) (clear a) (clear b) (clear d) (ontable d) (ontable a) (clear g) (handempty ) (on g c))
+
+(:action (unstack-ok b e))
+
+(:state (on e f) (ontable f) (ontable c) (clear a) (clear d) (ontable d) (ontable a) (clear g) (on g c) (holding b) (clear e))
+
+(:action (stack b e))
+
+(:state (on e f) (ontable f) (ontable c) (clear a) (clear d) (ontable d) (ontable a) (clear g) (on g c) (clear b) (handempty ) (on b e))
+
+(:action (unstack b e))
+
+(:state (on e f) (ontable f) (ontable c) (clear a) (clear d) (ontable d) (ontable a) (clear g) (on g c) (clear b) (handempty ) (clear e) (ontable b))
+
+(:action (unstack e f))
+
+(:state (ontable f) (ontable c) (clear a) (clear d) (ontable d) (ontable a) (clear g) (on g c) (clear b) (handempty ) (clear e) (ontable b) (clear f) (ontable e))
+
+(:action (pick-up a))
+
+(:state (ontable f) (ontable c) (clear d) (ontable d) (clear g) (on g c) (clear b) (clear e) (ontable b) (clear f) (ontable e) (holding a))
+
+(:action (stack a e))
+
+(:state (ontable f) (ontable c) (clear d) (ontable d) (clear g) (on g c) (clear b) (ontable b) (clear f) (ontable e) (clear a) (handempty ) (on a e))
+
+(:action (unstack g c))
+
+(:state (ontable f) (ontable c) (clear d) (ontable d) (clear g) (clear b) (ontable b) (clear f) (ontable e) (clear a) (handempty ) (on a e) (clear c) (ontable g))
+
+(:action (pick-up b))
+
+(:state (ontable f) (ontable c) (clear d) (ontable d) (clear g) (clear f) (ontable e) (clear a) (on a e) (clear c) (ontable g) (holding b))
+
+(:action (stack b d))
+
+(:state (ontable f) (ontable c) (ontable d) (clear g) (clear f) (ontable e) (clear a) (on a e) (clear c) (ontable g) (clear b) (handempty ) (on b d))
+
+(:action (unstack a e))
+
+(:state (ontable f) (ontable c) (ontable d) (clear g) (clear f) (ontable e) (clear a) (clear c) (ontable g) (clear b) (handempty ) (on b d) (clear e) (ontable a))
+
+(:action (pick-up e))
+
+(:state (ontable f) (ontable c) (ontable d) (clear g) (clear f) (clear a) (clear c) (ontable g) (clear b) (on b d) (ontable a) (holding e))
+
+(:action (stack e f))
+
+(:state (ontable f) (ontable c) (ontable d) (clear g) (clear a) (clear c) (ontable g) (clear b) (on b d) (ontable a) (clear e) (handempty ) (on e f))
+
+(:action (unstack b d))
+
+(:state (ontable f) (ontable c) (ontable d) (clear g) (clear a) (clear c) (ontable g) (clear b) (ontable a) (clear e) (handempty ) (on e f) (clear d) (ontable b))
+
+(:action (unstack e f))
+
+(:state (ontable f) (ontable c) (ontable d) (clear g) (clear a) (clear c) (ontable g) (clear b) (ontable a) (clear e) (handempty ) (clear d) (ontable b) (clear f) (ontable e))
+
+(:action (pick-up d))
+
+(:state (ontable f) (ontable c) (clear g) (clear a) (clear c) (ontable g) (clear b) (ontable a) (clear e) (ontable b) (clear f) (ontable e) (holding d))
+
+(:action (put-down d))
+
+(:state (ontable f) (ontable c) (clear g) (clear a) (clear c) (ontable g) (clear b) (ontable a) (clear e) (ontable b) (clear f) (ontable e) (clear d) (handempty ) (ontable d))
+
+(:action (pick-up f))
+
+(:state (ontable c) (clear g) (clear a) (clear c) (ontable g) (clear b) (ontable a) (clear e) (ontable b) (ontable e) (clear d) (ontable d) (holding f)))

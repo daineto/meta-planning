@@ -1,0 +1,45 @@
+(trajectory
+
+(:objects d -  object c -  object a -  object b -  object g -  object f -  object e -  object )
+
+(:init (ontable d) (clear c) (handempty ) (clear d) (clear e) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (clear f) (ontable g) (on e a) (ontable c))
+
+(:action (unstack e a))
+
+(:state (ontable d) (clear c) (clear d) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (clear f) (ontable g) (ontable c) (holding e) (clear a))
+
+(:action (put-down e))
+
+(:state (ontable d) (clear c) (clear d) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (clear f) (ontable g) (ontable c) (clear a) (clear e) (handempty ) (ontable e))
+
+(:action (pick-up d))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (clear f) (ontable g) (ontable c) (clear a) (clear e) (ontable e) (holding d))
+
+(:action (stack d f))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (ontable g) (ontable c) (clear a) (clear e) (ontable e) (clear d) (handempty ) (on d f))
+
+(:action (unstack d f))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (ontable g) (ontable c) (clear a) (clear e) (ontable e) (holding d) (clear f))
+
+(:action (put-down d))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (ontable g) (ontable c) (clear a) (clear e) (ontable e) (clear f) (clear d) (handempty ) (ontable d))
+
+(:action (pick-up d))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (ontable g) (ontable c) (clear a) (clear e) (ontable e) (clear f) (holding d))
+
+(:action (put-down d))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable a) (ontable g) (ontable c) (clear a) (clear e) (ontable e) (clear f) (clear d) (handempty ) (ontable d))
+
+(:action (pick-up a))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable g) (ontable c) (clear e) (ontable e) (clear f) (clear d) (ontable d) (holding a))
+
+(:action (put-down a))
+
+(:state (clear c) (clear b) (ontable f) (clear g) (ontable b) (ontable g) (ontable c) (clear e) (ontable e) (clear f) (clear d) (ontable d) (clear a) (handempty ) (ontable a)))

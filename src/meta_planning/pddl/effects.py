@@ -16,6 +16,10 @@ class Effect(object):
         self.parameters = parameters
         self.condition = condition
         self.literal = literal
+        # self.hash =
+
+    def __hash__(self):
+        return hash((self.__class__, tuple(self.parameters), self.condition, self.literal))
 
     def __str__(self):
         effect_str = ""

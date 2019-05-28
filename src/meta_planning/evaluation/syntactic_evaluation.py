@@ -6,6 +6,19 @@ import itertools
 from ..pddl import Literal
 from .scores import Score
 
+class bcolors:
+    MISSING = '\033[94m'
+    EXTRA = '\033[91m'
+    ENDC = '\033[0m'
+
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 class Matching(object):
     def __init__(self, original_scheme, matched_scheme, parameters_ordering):
@@ -39,7 +52,50 @@ class SynEvaluator(object):
                 best_f1 = score.f1_score
                 best_score = score
 
-        return best_score
+
+        self.__compare(best_score.matchings)
+
+        print(best_score)
+
+
+    def __compare(self, matchings):
+
+        for matching in matchings:
+            reference = matching.original_scheme.reform(matching.parameters_ordering)
+            evaluated = matching.matched_scheme
+
+            ref_preconditions = set(reference.precondition.parts)
+            ref_effects = set(reference.effects)
+
+            eva_preconditions = set(evaluated.precondition.parts)
+            eva_effects = set(evaluated.effects)
+
+
+            print("(:action %s" % evaluated.name)
+            print("\t:parameters (%s)" % (' '.join(map(str, evaluated.parameters))))
+            print("\t:precondition (and")
+            for pre in eva_preconditions.intersection(ref_preconditions):
+                print("\t\t%s" % pre)
+            for pre in eva_preconditions.difference(ref_preconditions):
+                print(bcolors.EXTRA + "\t\t%s" % pre + bcolors.ENDC)
+            for pre in ref_preconditions.difference(eva_preconditions):
+                print(bcolors.MISSING + "\t\t%s" % pre + bcolors.ENDC)
+
+            print("\t)")
+            print("\t:effects (and")
+            for eff in eva_effects.intersection(ref_effects):
+                print("\t\t%s" % eff)
+            for eff in eva_effects.difference(ref_effects):
+                print(bcolors.EXTRA + "\t\t%s" % eff + bcolors.ENDC)
+            for eff in ref_effects.difference(eva_effects):
+                print(bcolors.MISSING + "\t\t%s" % eff + bcolors.ENDC)
+
+            print("\t)")
+            print(")")
+            print()
+
+
+
 
 
     def __evaluate_matchings(self, matchings):
@@ -116,7 +172,7 @@ class SynEvaluator(object):
             for l_scheme in learned_schemata:
                 learned_parameters = [p.type_name for p in l_scheme.parameters]
 
-                if sorted(reference_parameters) == (learned_parameters):
+                if sorted(reference_parameters) == sorted(learned_parameters):
                     orderings = list(itertools.permutations(range(len(reference_parameters))))
                     valid_orderings = [ordering for ordering in orderings if self.__is_valid_ordering(ordering, reference_parameters, learned_parameters)]
                     matchings_by_scheme[r_scheme.name] += [Matching(r_scheme, l_scheme, ordering) for ordering in valid_orderings]

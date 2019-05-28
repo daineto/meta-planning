@@ -49,22 +49,6 @@ class Model(object):
         return model_str
 
 
-    def propositional_preconditions(self):
-        propositions = []
-        for scheme in self.schemata:
-            propositions += scheme.propositional_preconditions()
-
-        return propositions
-
-
-    def propositional_encoding(self):
-        propositions = []
-        for scheme in self.schemata:
-            propositions += scheme.propositional_effects()
-
-        return propositions
-
-
     def propositional_encoding(self):
         propositions = []
         for scheme in self.schemata:
@@ -77,7 +61,7 @@ class Model(object):
             f.write(str(self))
 
 
-    def observe(self, precondition_observability=1, effect_observability=1):
+    def observe(self, precondition_observability=0, effect_observability=0):
         observed_schemata = [s.observe(precondition_observability=precondition_observability, effect_observability=effect_observability) for s in self.schemata]
 
         return Model(self.domain_name, self.requirements, self.types, self.predicates, self.functions, observed_schemata, self.axioms)

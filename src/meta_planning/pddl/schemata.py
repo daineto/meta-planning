@@ -104,10 +104,6 @@ class Scheme(object):
 
 
 
-        pass
-
-
-
     def uniquify_variables(self):
         self.type_map = dict([(par.name, par.type_name)
                               for par in self.parameters])

@@ -14,7 +14,12 @@ class Score(object):
     def __str__(self):
         score_str = ""
         score_str += "F1 score: %s \n" % (self.f1_score)
-        score_str += "Average precision: %s, recall %s \n" % (self.avg_precision, self.avg_recall)
-        score_str += "Matchings: %s" % (", ".join(map(str, self.matchings)))
+        score_str += "PRE precision: %s, recall %s \n" % (self.precision_pres, self.recall_pres)
+        score_str += "ADD precision: %s, recall %s \n" % (self.precision_adds, self.recall_adds)
+        score_str += "DEL precision: %s, recall %s \n" % (self.precision_dels, self.recall_dels)
+        score_str += "AVG precision: %s, recall %s \n" % (self.avg_precision, self.avg_recall)
+        score_str += "Matchings: \n"
+        for matching in self.matchings:
+            score_str += "\t%s\n" % matching
 
         return score_str

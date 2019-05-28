@@ -10,6 +10,7 @@ from .programming_stage import get_model_space_size
 from .validation_stage import generate_test_fluents
 from .validation_stage import generate_plan_fluents
 from .validation_stage import generate_validation_actions
+from .validation_stage import generate_all_literals
 
 from .problem import generate_goal
 from .problem import generate_step_objects

@@ -90,9 +90,6 @@ def parse_solution(solution_file, initial_model, observations, known_model):
     cuts = [0]
 
 
-    plan = parse_plan(solution_file)
-
-
     try:
         plan = parse_plan(solution_file)
     except:
@@ -136,6 +133,8 @@ def parse_solution(solution_file, initial_model, observations, known_model):
         else:
             if observations_contain_actions:
                 regular_action = Action(action.name, action.arguments[:-2])
+            else:
+                regular_action = action
             regular_actions += [regular_action]
 
     learned_model = build_model(pres, effs, initial_model)

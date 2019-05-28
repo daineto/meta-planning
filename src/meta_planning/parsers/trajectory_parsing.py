@@ -4,6 +4,8 @@ from ..observations import State, Trajectory
 from .pddl_parsing import parse_pddl_file
 from .parsing_functions import parse_typed_list
 
+from ..compilation import generate_all_literals
+
 import random
 import itertools
 
@@ -42,7 +44,10 @@ def parse_state(new_state, all_literals, autocomplete=True):
     return sorted(state)
 
 
-def parse_trajectory(trajectory_file, predicates):
+def parse_trajectory(trajectory_file, model):
+
+    predicates = model.predicates
+    types = model.types
 
     trajectory_pddl = parse_pddl_file('trajectory', trajectory_file)
 
@@ -57,18 +62,7 @@ def parse_trajectory(trajectory_file, predicates):
     assert objects_opt[0] == ":objects"
     object_list = parse_typed_list(objects_opt[1:])
 
-    all_literals = set()
-    for predicate in predicates:
-        args = list()
-        for i in range(len(predicate.arguments)):
-            iargs = list()
-            for object in object_list:
-                if object.type_name == predicate.arguments[i].type_name:
-                    iargs.append(object.name)
-            args.append(iargs)
-
-        for tup in itertools.product(*args):
-            all_literals.add(Literal(predicate.name, tup, True))
+    all_literals = set(generate_all_literals(predicates, object_list, types))
 
 
     states = []

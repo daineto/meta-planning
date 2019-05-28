@@ -9,13 +9,22 @@ all_domains = learning_domains + [d for group in recognition_domains for d in gr
 
 def list_domains():
 
+    list_learning_domains()
+    print()
+    list_recognition_domains()
+
+
+def list_learning_domains():
     print("Learning domains:")
     for d in learning_domains:
         print("\t %s" % d)
-    print()
+
+
+def list_recognition_domains():
     print("Recognition domains:")
     for i in range(len(recognition_domains)):
         print("\t Group %s: %s" % (i, ", ".join(recognition_domains[i])))
+
 
 
 def load_model(domain, completeness="reference"):
@@ -35,7 +44,7 @@ def load_trajectories(domain, select=range(10)):
     for f in trajectory_files:
         trajectory_path = os.path.join(os.path.dirname(__file__), domain, f)
 
-        trajectories += [parse_trajectory(trajectory_path, M.predicates)]
+        trajectories += [parse_trajectory(trajectory_path, M)]
 
 
     return trajectories

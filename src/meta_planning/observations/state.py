@@ -7,6 +7,8 @@ class State(object):
         state_str = "(:state %s)" % (' '.join(map(str, self.literals)))
         if self.next_action != None:
             state_str += "\n\n(:action %s)" % self.next_action
+        # else:
+        #     state_str += "\n\n(:action )"
         return state_str
 
     def __repr__(self):

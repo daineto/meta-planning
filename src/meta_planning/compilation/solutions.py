@@ -29,6 +29,7 @@ class ModelRecognitionSolution(object):
         self.posteriors = self.__compute_posteriors()
         self.normalized_posteriors = self.__normalize_posteriors()
 
+
     def __compute_conditionals(self):
         conditionals = []
 

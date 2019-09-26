@@ -120,7 +120,7 @@ class ValidationTask(object):
         return Problem("compiled_problem", self.initial_model.domain_name, objects, init, goal)
 
 
-    def validate(self, clean=True):
+    def validate(self, clean=True, parallel=True):
         problem_file = 'compiled_problem'
         domain_file = 'compiled_domain'
         solution_file = 'solution_plan'
@@ -141,7 +141,10 @@ class ValidationTask(object):
 
         cmd_args = [planner_path, domain_file, problem_file, "-S 1", "-Q", "-o %s" % solution_file, "-F %s" % min_horizon]
 
-        if all(o.bounded for o in self.observations):
+        if not parallel:
+            cmd_args += ["-P 0"]
+
+        if parallel and all(o.bounded for o in self.observations):
             cmd_args += ["-T %s" % max_horizon]
 
         cmd_args += ["> %s" % log_file]
@@ -179,7 +182,7 @@ class ModelRecognitionTask(object):
 
 
     def recognize(self):
-        solutions = [t.validate() for t in self.tasks]
+        solutions = [t.validate(parallel=False) for t in self.tasks]
         model_space_size = get_model_space_size(self.models[0])
 
         return ModelRecognitionSolution(solutions, self.priors, model_space_size)

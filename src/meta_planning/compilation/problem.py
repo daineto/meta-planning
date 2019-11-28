@@ -1,4 +1,5 @@
 from ..pddl import TypedObject, Literal, Conjunction
+from ..observations import State
 
 def generate_goal(number_of_states, number_of_observations):
 
@@ -30,5 +31,5 @@ def generate_initial_state(max_actions, known_model):
     if max_actions != 0:
         init += [Literal("inext", ["i" + str(i), "i" + str(i+1)], True) for i in range(max_actions)]
 
-    return init
+    return State(init, None)
 

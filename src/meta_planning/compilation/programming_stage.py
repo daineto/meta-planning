@@ -1,5 +1,5 @@
 from ..pddl import Predicate, Literal, Scheme, Effect, Truth, Conjunction, Type, TypedObject
-from .basic import is_possible_predicate_for_scheme
+from ..functions import is_possible_predicate_for_scheme
 
 import itertools
 
@@ -90,7 +90,7 @@ def generate_programming_actions(scheme, predicates, types, known_model, allow_i
             eff = [Effect([], Truth(), proposition)]
 
             programming_actions += [ Scheme("insert_" + proposition.predicate, [],
-                                    0, Conjunction(pre), eff, 0) ]
+                                    0, Conjunction(pre), eff, None) ]
 
 
         # Action for inserting an effect
@@ -104,7 +104,7 @@ def generate_programming_actions(scheme, predicates, types, known_model, allow_i
             eff = [Effect([], Truth(), proposition)]
 
             programming_actions += [Scheme("insert_" + proposition.predicate, [],
-                                           0, Conjunction(pre), eff, 0)]
+                                           0, Conjunction(pre), eff, None)]
 
     if allow_deletions:
 
@@ -118,7 +118,7 @@ def generate_programming_actions(scheme, predicates, types, known_model, allow_i
             eff = [Effect([], Truth(), proposition.negate())]
 
             programming_actions += [Scheme("delete_" + proposition.predicate, [],
-                                           0, Conjunction(pre), eff, 0)]
+                                           0, Conjunction(pre), eff, None)]
 
         # Action for inserting an effect
 
@@ -130,7 +130,7 @@ def generate_programming_actions(scheme, predicates, types, known_model, allow_i
             eff = [Effect([], Truth(), proposition.negate())]
 
             programming_actions += [Scheme("delete_" + proposition.predicate, [],
-                                           0, Conjunction(pre), eff, 0)]
+                                           0, Conjunction(pre), eff, None)]
 
 
     return programming_actions
@@ -146,7 +146,55 @@ def generate_programming_actions(scheme, predicates, types, known_model, allow_i
 #     return effects_programming_action
 
 
-def generate_programmable_action(scheme, predicates, types, observations_contain_actions, all_states_observed, all_actions_observed):
+
+def generate_extended_action(scheme, alternate, observations_contain_actions, all_actions_observed):
+    # Original domain actions
+    params = [par for par in scheme.parameters]
+
+    pre = [p for p in scheme.precondition.parts]
+
+    pre += [Literal("disabled", [], False)]
+
+    if alternate:
+        pre += [Literal("action_applied", [], False)]
+
+    eff = scheme.effects
+
+    # action_applied predicate
+    eff += [Effect([], Truth(), Literal("action_applied", [], True))]
+
+    # Add "step" parameters to the original actions
+    # This will allow to reproduce the input traces
+    if observations_contain_actions:
+        params += [TypedObject("?i1", "step")]
+        params += [TypedObject("?i2", "step")]
+
+    # Add "modeProg" precondition
+    pre += [Literal("modeProg", [], False)]
+
+    # Define action validation condition
+    # Example (and (plan-pickup ?i1 ?o1) (current ?i1) (inext ?i1 ?i2))
+    if observations_contain_actions:
+        validation_condition = [Literal("current", ["?i1"], True)]
+        validation_condition += [Literal("inext", ["?i1", "?i2"], True)]
+
+        pre += validation_condition
+
+        plan_fluent = Literal("plan-" + scheme.name, ["?i1"] + ["?o" + str(i + 1) for i in range(scheme.num_external_parameters)], True)
+
+        if all_actions_observed:
+            pre += [plan_fluent]
+            eff += [Effect([], Truth(), Literal("current", ["?i1"], False))]
+            eff = eff + [Effect([], Truth(), Literal("current", ["?i2"], True))]
+        else:
+            eff += [Effect([], Conjunction([plan_fluent]), Literal("current", ["?i1"], False))]
+            eff = eff + [Effect([], Conjunction([plan_fluent]), Literal("current", ["?i2"], True))]
+
+
+    return  Scheme(scheme.name, params, len(params), Conjunction(pre), eff, None)
+
+
+def generate_programmable_action(scheme, predicates, types, alternate, observations_contain_actions, all_actions_observed):
     # Original domain actions
     original_params = [par.name for par in scheme.parameters]
     params = [TypedObject("?o" + str(i + 1), scheme.parameters[i].type_name) for i in
@@ -154,7 +202,9 @@ def generate_programmable_action(scheme, predicates, types, observations_contain
 
     pre = []
 
-    if all_states_observed:
+    pre += [Literal("disabled", [], False)]
+
+    if alternate:
         pre += [Literal("action_applied", [], False)]
 
     eff = []
@@ -226,5 +276,5 @@ def generate_programmable_action(scheme, predicates, types, observations_contain
                 eff = eff + [Effect([], condition, Literal(p.name, ["?o" + str(t) for t in tup], True))]
 
 
-    return  Scheme(scheme.name, params, len(params), Conjunction(pre), eff, 0)
+    return  Scheme(scheme.name, params, len(params), Conjunction(pre), eff, None)
 

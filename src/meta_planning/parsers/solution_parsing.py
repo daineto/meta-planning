@@ -52,7 +52,17 @@ def parse_plan(plan_file):
     f.close()
 
     for line in lines:
-        cleaned_action = line.split(":")[1].strip()[1:-1].split(" ")
+
+        if ";" in line:
+            continue
+        line = line.lower()
+        splitted_line = line.split(":")
+        if len(splitted_line) == 2:
+            raw_action = splitted_line[1]
+        else:
+            raw_action = splitted_line[0]
+
+        cleaned_action = raw_action.strip().replace("(","").replace(")","").split(" ")
         actions += [Action(cleaned_action[0], cleaned_action[1:])]
 
     return Plan(actions)

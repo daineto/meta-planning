@@ -1,5 +1,5 @@
 from .graph import transitive_closure
-from .parsing_functions import parse_typed_list
+from .parsing_functions import parse_typed_list, parse_condition, parse_literal, parse_assignment
 from .pddl_parsing import parse_pddl_file
 
 from ..pddl import Type, TypedObject, Literal, Requirements, Predicate, Model, Axiom, Scheme
@@ -24,98 +24,10 @@ def set_supertypes(type_list):
 
 
 
-def parse_condition(alist, type_dict, predicate_dict):
-    condition = parse_condition_aux(alist, False, type_dict, predicate_dict)
-    # TODO: The next line doesn't appear to do anything good,
-    # since uniquify_variables doesn't modify the condition in place.
-    # Conditions in actions or axioms are uniquified elsewhere, but
-    # it looks like goal conditions are never uniquified at all
-    # (which would be a bug).
-    condition.uniquify_variables({})
-    return condition
 
 
-def parse_condition_aux(alist, negated, type_dict, predicate_dict):
-    """Parse a PDDL condition. The condition is translated into NNF on the fly."""
-    tag = alist[0]
-    if tag in ("and", "or", "not", "imply"):
-        args = list()
-        for arg in alist[1:]:
-            if arg[0] == "=":
-                continue
-            if arg[0] == "not" and arg[1][0] == "=":
-                continue
-            args.append(arg)
-        if tag == "imply":
-            assert len(args) == 2
-        if tag == "not":
-            assert len(args) == 1
-            return parse_condition_aux(
-                args[0], not negated, type_dict, predicate_dict)
-    elif tag in ("forall", "exists"):
-        parameters = parse_typed_list(alist[1])
-        args = alist[2:]
-        assert len(args) == 1
-    else:
-        return parse_literal(alist, type_dict, predicate_dict, negated=negated)
-
-    if tag == "imply":
-        parts = [parse_condition_aux(
-                args[0], not negated, type_dict, predicate_dict),
-                 parse_condition_aux(
-                args[1], negated, type_dict, predicate_dict)]
-        tag = "or"
-    else:
-        parts = [parse_condition_aux(part, negated, type_dict, predicate_dict) for part in args]
-
-    if tag == "and" and not negated or tag == "or" and negated:
-        return Conjunction(parts)
-    elif tag == "or" and not negated or tag == "and" and negated:
-        return Disjunction(parts)
-    elif tag == "forall" and not negated or tag == "exists" and negated:
-        return UniversalCondition(parameters, parts)
-    elif tag == "exists" and not negated or tag == "forall" and negated:
-        return ExistentialCondition(parameters, parts)
 
 
-def parse_literal(alist, type_dict, predicate_dict, negated=False):
-    if alist[0] == "not":
-        assert len(alist) == 2
-        alist = alist[1]
-        negated = not negated
-
-    pred_id, arity = _get_predicate_id_and_arity(
-        alist[0], type_dict, predicate_dict)
-
-    if arity != len(alist) - 1:
-        raise SystemExit("predicate used with wrong arity: (%s)"
-                         % " ".join(alist))
-
-    if negated:
-        return Literal(pred_id, alist[1:], False)
-    else:
-        return Literal(pred_id, alist[1:], True)
-
-
-SEEN_WARNING_TYPE_PREDICATE_NAME_CLASH = False
-def _get_predicate_id_and_arity(text, type_dict, predicate_dict):
-    global SEEN_WARNING_TYPE_PREDICATE_NAME_CLASH
-
-    the_type = type_dict.get(text)
-    the_predicate = predicate_dict.get(text)
-
-    if the_type is None and the_predicate is None:
-        raise SystemExit("Undeclared predicate: %s" % text)
-    elif the_predicate is not None:
-        if the_type is not None and not SEEN_WARNING_TYPE_PREDICATE_NAME_CLASH:
-            msg = ("Warning: name clash between type and predicate %r.\n"
-                   "Interpreting as predicate in conditions.") % text
-            print(msg, file=sys.stderr)
-            SEEN_WARNING_TYPE_PREDICATE_NAME_CLASH = True
-        return the_predicate.name, the_predicate.get_arity()
-    else:
-        assert the_type is not None
-        return the_type.get_predicate_name(), 1
 
 
 def parse_predicate(alist):
@@ -185,6 +97,11 @@ def parse_effect(alist, type_dict, predicate_dict):
             alist[1], type_dict, predicate_dict)
         effect = parse_effect(alist[2], type_dict, predicate_dict)
         return ConditionalEffect(condition, effect)
+    elif tag == "increase":
+        assert len(alist) == 3
+        assert alist[1] == ['total-cost']
+        assignment = parse_assignment(alist)
+        return CostEffect(assignment)
     else:
         # We pass in {} instead of type_dict here because types must
         # be static predicates, so cannot be the target of an effect.
@@ -251,7 +168,7 @@ def parse_action(alist, type_dict, predicate_dict):
     #     return None
 
     return Scheme(name, parameters, len(parameters),
-                           precondition, eff, None)
+                           precondition, eff, cost)
 
 
 def parse_axiom(alist, type_dict, predicate_dict):

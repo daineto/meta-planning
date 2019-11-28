@@ -2,6 +2,7 @@ import copy
 from random import random
 from . import conditions
 from .effects import Effect
+from .pddl_types import TypedObject
 
 
 
@@ -20,7 +21,7 @@ class Scheme(object):
         self.precondition = precondition
         self.effects = effects
         self.cost = cost
-        self.uniquify_variables() # TODO: uniquify variables in cost?
+        # self.uniquify_variables() # TODO: uniquify variables in cost?
 
     def __repr__(self):
         return "Scheme(name: %r, parameters: %r, precondition: %r, effects: %r" % (self.name, self.parameters, self.precondition, self.effects)
@@ -32,6 +33,8 @@ class Scheme(object):
         scheme_str += "\t:effect (and \n"
         for e in self.effects:
             scheme_str += "\t\t%s\n" % (e)
+        if self.cost is not None:
+            scheme_str += "\t\t%s\n" % (self.cost)
         scheme_str += "\t)\n)"
         return scheme_str
 
@@ -103,6 +106,33 @@ class Scheme(object):
         return Scheme(self.name, new_params, self.num_external_parameters, conditions.Conjunction(new_pres), new_effs, self.cost)
 
 
+    def instantiate(self, objects):
+        new_pres = []
+        new_effs = []
+
+        objects = [o for o in objects if o != ""]
+
+        new_params = [TypedObject(objects[i], self.parameters[i].type_name) for i in range(len(self.parameters))]
+
+        parameter_names = [p.name for p in self.parameters]
+
+        for pre in self.precondition.parts:
+            args_indices = [parameter_names.index(arg) for arg in pre.args]
+
+            new_args = [objects[i] for i in args_indices]
+            new_pres += [conditions.Literal(pre.predicate, new_args, pre.valuation)]
+
+        for eff in self.effects:
+            if not isinstance(eff.literal, conditions.Literal):
+                continue
+            args_indices = [parameter_names.index(arg) for arg in eff.literal.args]
+
+            new_args = [objects[i] for i in args_indices]
+            new_effs += [Effect(eff.parameters, eff.condition, conditions.Literal(eff.literal.predicate, new_args, eff.literal.valuation))]
+            pass
+
+        return Scheme(self.name, new_params, self.num_external_parameters, conditions.Conjunction(new_pres), new_effs, self.cost)
+
 
     def uniquify_variables(self):
         self.type_map = dict([(par.name, par.type_name)
@@ -132,5 +162,11 @@ class Action(object):
     def __str__(self):
         action_str = "(%s %s)" % (self.name, " ".join(self.arguments))
         return action_str
+
+    def __eq__(self, other):
+        if self.name != other.name:
+            return False
+        else:
+            return all([self.arguments[i] == other.arguments[i] for i in range(len(self.arguments))])
 
 

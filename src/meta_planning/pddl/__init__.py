@@ -4,6 +4,7 @@ from .pddl_types import TypedObject
 from .predicates import Predicate
 
 from .tasks import Model
+from .tasks import SensorModel
 from .tasks import Problem
 from .tasks import Requirements
 from .tasks import Plan
@@ -27,3 +28,8 @@ from .effects import ConjunctiveEffect
 from .effects import UniversalEffect
 from .effects import CostEffect
 from .effects import SimpleEffect
+
+from .f_expression import PrimitiveNumericExpression
+from .f_expression import NumericConstant
+from .f_expression import Assign
+from .f_expression import Increase

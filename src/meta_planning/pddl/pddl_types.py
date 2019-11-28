@@ -11,7 +11,10 @@ class Type(object):
         self.basetype_name = basetype_name
 
     def __str__(self):
-        return self.name
+        if self.basetype_name != None:
+            return "%s - %s" % (self.name, self.basetype_name)
+        else:
+            return self.name
 
     def __repr__(self):
         return "Type(%s, %s)" % (self.name, self.basetype_name)

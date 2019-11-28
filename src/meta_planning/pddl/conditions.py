@@ -296,3 +296,9 @@ class Literal(Fluent):
 
     def positive(self):
         return Literal(self.predicate, self.args, True)
+
+    def flip(self):
+        if self.valuation:
+            return self.negate()
+        else:
+            return self.positive()

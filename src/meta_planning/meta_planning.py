@@ -57,10 +57,16 @@ class ValidationTask(object):
         all_states_observed = all([o.all_states_observed for o in self.observations])
         all_actions_observed = all([o.all_actions_observed for o in self.observations])
 
-        if all_states_observed or self.sensor_model is not None:
+
+        if all_states_observed:
             alternate = True
         else:
             alternate = False
+
+        # if all_states_observed or self.sensor_model is not None:
+        #     alternate = True
+        # else:
+        #     alternate = False
 
         NUM_OBSERVATIONS = len(self.observations)
         NUM_OBSERVED_STATES = sum([o.number_of_states for o in self.observations])

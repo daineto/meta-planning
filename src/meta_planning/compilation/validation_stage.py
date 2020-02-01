@@ -129,68 +129,16 @@ def generate_sense_action(observed_literals, new_actions, old_actions, count, ob
 
     eff += [Effect([], Truth(), Literal("test" + str(count), [], True))]
 
-    o_to_s = sensor_model.get_o_to_s()
+    for observable in observed_literals:
+        for s_literal,probability in sensor_model.get_state_variables(observable).items():
 
-    for literal in sensor_model.get_observable_fluents():
-        s_literal = o_to_s[literal]
-        if literal in observed_literals: # Observed
-            # Correct
-            probability = sensor_model.observability_table[s_literal][0]
             if probability == 0:
                 eff += [
                     Effect([], s_literal, Literal("disabled", [], True))]
-            elif probability > 0 and probability < 1:
+            elif sensor_model.probabilistic and probability > 0 and probability < 1:
                 cost = -round(np.log(probability) * 100)
                 eff += [
                     Effect([], s_literal, Increase(PrimitiveNumericExpression("total-cost", []), NumericConstant(cost)))]
-
-            # Noise
-            probability = sensor_model.observability_table[s_literal][1]
-            if probability == 0:
-                eff += [
-                    Effect([], s_literal.negate(), Literal("disabled", [], True))]
-            elif probability > 0 and probability < 1:
-                cost = -round(np.log(probability) * 100)
-                eff += [
-                    Effect([], s_literal.negate(), Increase(PrimitiveNumericExpression("total-cost", []), NumericConstant(cost)))]
-
-        # elif literal.negate() in observed_literals:
-        #     # Correct
-        #     probability = sensor_model.observability_table[s_literal][0]
-        #     if probability == 0:
-        #         eff += [
-        #             Effect([], s_literal.negate(), Literal("disabled", [], True))]
-        #     elif probability > 0 and probability < 1:
-        #         cost = -round(np.log(probability) * 100)
-        #         eff += [
-        #             Effect([], s_literal.negate(), Increase(PrimitiveNumericExpression("total-cost", []), NumericConstant(cost)))]
-        #
-        #     # Noise
-        #     probability = sensor_model.observability_table[s_literal][1]
-        #     if probability == 0:
-        #         eff += [
-        #             Effect([], s_literal, Literal("disabled", [], True))]
-        #     elif probability > 0 and probability < 1:
-        #         cost = -round(np.log(probability) * 100)
-        #         eff += [
-        #             Effect([], s_literal,
-        #                    Increase(PrimitiveNumericExpression("total-cost", []), NumericConstant(cost)))]
-        else: # Missing
-
-            probability = sensor_model.observability_table[s_literal][2]
-            if probability == 0:
-                eff += [
-                    Effect([], s_literal, Literal("disabled", [], True))]
-                # eff += [
-                #     Effect([], s_literal.negate(), Literal("disabled", [], True))]
-            elif probability > 0 and probability < 1:
-                cost = -round(np.log(probability) * 100)
-                eff += [
-                    Effect([], s_literal, Increase(PrimitiveNumericExpression("total-cost", []), NumericConstant(cost)))]
-                # eff += [
-                #     Effect([], s_literal.negate(),
-                #            Increase(PrimitiveNumericExpression("total-cost", []), NumericConstant(cost)))]
-
 
 
     if observations_contain_actions:
@@ -242,7 +190,7 @@ def generate_sense_missing_action(sensor_model):
 def generate_sense_actions(observations, sensor_model, observations_contain_actions):
     sense_actions = []
 
-    all_literals = sensor_model.observability_table.keys()
+    all_literals = sensor_model.o_to_s.keys()
 
     last_state_validations = []
     # First validate action
@@ -300,8 +248,8 @@ def generate_sense_actions(observations, sensor_model, observations_contain_acti
 
 
     # Sense missing
-    sense_action = generate_sense_missing_action(sensor_model)
-    sense_actions += [sense_action]
+    # sense_action = generate_sense_missing_action(sensor_model)
+    # sense_actions += [sense_action]
 
 
 

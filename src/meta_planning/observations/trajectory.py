@@ -3,10 +3,11 @@ from .state import State
 
 
 class Trajectory(object):
-    def __init__(self, objects, states):
+    def __init__(self, objects, states, cost=0):
         self.objects = objects
         self.states = states
         self.length = len(states)
+        self.cost = cost
 
     def __str__(self):
         trajectory_str = ""

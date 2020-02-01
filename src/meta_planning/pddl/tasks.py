@@ -1,4 +1,5 @@
 import numpy as np
+from _collections import defaultdict
 
 
 # def get_all_subtypes(the_type, all_types):
@@ -95,11 +96,16 @@ class Model(object):
 
 
 class SensorModel(object):
-    def __init__(self, mapping, initial_probabilities):
-        self.s_to_o = mapping # state to observation
-        # self.o_to_s = {v:k for k,v in mapping.items()} # observation to state
+    def __init__(self, mapping, probabilistic=False):
 
-        self.observability_table = self.__initialize(initial_probabilities)
+        self.probabilistic = probabilistic
+        self.s_to_o = mapping # state to observation
+        self.o_to_s = defaultdict(dict)
+
+        for key, val in self.s_to_o.items():
+            for subkey, subval in val.items():
+                self.o_to_s[subkey][key] = subval
+
 
     def __initialize(self, initial_probabilities):
         # literals = generate_all_literals(self.model.predicates, self.objects, self.model.types)
@@ -120,16 +126,22 @@ class SensorModel(object):
 
 
     def observe(self, literal):
-        observation = np.random.choice([self.s_to_o[literal], self.s_to_o[literal].flip(), None], 1, p=self.observability_table[literal])
 
-        return observation[0]
+        if literal in self.s_to_o.keys():
+            observation = np.random.choice(list(self.s_to_o[literal].keys()), 1, p=list(self.s_to_o[literal].values()))
+            return observation[0]
+        else:
+            return None
 
 
     def get_observable_fluents(self):
-        return set(self.s_to_o.values())
+        return set(self.o_to_s.keys())
 
-    def get_o_to_s(self):
-        return  {v: k for k, v in self.s_to_o.items()}
+    def get_observable_variables(self, literal):
+        return self.s_to_o[literal]
+
+    def get_state_variables(self, observable):
+        return self.o_to_s[observable]
 
 
 

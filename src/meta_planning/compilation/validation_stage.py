@@ -84,7 +84,7 @@ def generate_validation_actions(observations, observations_contain_actions, pred
                 l.valuation and l not in init_literals and l in literals]
 
 
-        if observation.states[0].next_action != None:
+        if observation.states[0].next_action is not None:
             new_actions += [observation.states[0].next_action]
 
 
@@ -103,7 +103,7 @@ def generate_validation_actions(observations, observations_contain_actions, pred
                 pre += [Literal("action_applied", [], True)]
                 eff += [Effect([], Truth(), Literal("action_applied", [], False))]
 
-            if state.next_action != None:
+            if state.next_action is not None:
                 new_actions += [state.next_action]
 
     validation_action = generate_validation_action(literals, new_actions, old_actions, states_seen,
@@ -211,7 +211,7 @@ def generate_sense_actions(observations, sensor_model, observations_contain_acti
         eff += [Effect([], Truth(), l.negate()) for l in all_literals if
                 l.valuation and l not in init_literals and l in literals]
 
-        if observation.states[0].next_action != None:
+        if observation.states[0].next_action is not None:
             new_actions += [observation.states[0].next_action]
 
         first=True
@@ -238,7 +238,7 @@ def generate_sense_actions(observations, sensor_model, observations_contain_acti
                 pre += [Literal("action_applied", [], True)]
                 eff += [Effect([], Truth(), Literal("action_applied", [], False))]
 
-            if state.next_action != None:
+            if state.next_action is not None:
                 new_actions += [state.next_action]
 
     sense_action = generate_validation_action(literals, new_actions, old_actions, states_seen,

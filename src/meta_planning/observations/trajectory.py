@@ -48,7 +48,7 @@ class Trajectory(object):
         if random() < action_observability:
             current_action = self.states[0].next_action
 
-        if current_literals != [] and current_action != None:
+        if current_literals != [] and current_action is not None:
             new_states.append(State(current_literals, current_action))
             current_literals = []
             current_action = None
@@ -65,19 +65,19 @@ class Trajectory(object):
             new_action = None
             if random() < action_observability:
                 new_action = s.next_action
-            if new_action != None:
-                if current_action != None:
+            if new_action is not None:
+                if current_action is not None:
                     new_states.append(State([], current_action))
                 current_action = new_action
 
-            if current_literals != [] and current_action != None:
+            if current_literals != [] and current_action is not None:
                 new_states.append(State(current_literals, current_action))
                 current_literals = []
                 current_action = None
 
         if current_literals != []:
             new_states.append(State(current_literals, None))
-        elif current_action != None:
+        elif current_action is not None:
             new_states.append(State([], current_action))
 
         new_literals = [l for l in self.states[-1].literals if random() < goal_observability]
@@ -108,7 +108,7 @@ class Trajectory(object):
         if random() < action_observability:
             current_action = self.states[0].next_action
 
-        if current_literals != [] and current_action != None:
+        if current_literals != [] and current_action is not None:
             new_states.append(State(current_literals, current_action))
             current_literals = []
             current_action = None
@@ -126,19 +126,19 @@ class Trajectory(object):
             new_action = None
             if random() < action_observability:
                 new_action = s.next_action
-            if new_action != None:
-                if current_action != None:
+            if new_action is not None:
+                if current_action is not None:
                     new_states.append(State([], current_action))
                 current_action = new_action
 
-            if current_literals != [] and current_action != None:
+            if current_literals != [] and current_action is not None:
                 new_states.append(State(current_literals, current_action))
                 current_literals = []
                 current_action = None
 
         if current_literals != []:
             new_states.append(State(current_literals, None))
-        elif current_action != None:
+        elif current_action is not None:
             new_states.append(State([], current_action))
 
 
@@ -174,7 +174,7 @@ class Observation(object):
         return "Observation(objects: %r, states: %r, bounded: %r)" % (self.objects, self.states, self.bounded)
 
     def has_actions(self):
-        return any([s.next_action != None for s in self.states])
+        return any([s.next_action is not None for s in self.states])
 
     def get_number_of_states(self):
         num_states = 0
@@ -186,6 +186,6 @@ class Observation(object):
     def get_number_of_actions(self):
         num_actions = 0
         for s in self.states:
-            if s.next_action != None:
+            if s.next_action is not None:
                 num_actions += 1
         return num_actions

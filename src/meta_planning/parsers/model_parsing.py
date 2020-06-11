@@ -153,6 +153,8 @@ def parse_action(alist, type_dict, predicate_dict):
     assert effect_tag == ":effect"
     effect_list = next(iterator)
     eff = []
+
+    cost = None
     if effect_list:
         try:
             cost = parse_effects(

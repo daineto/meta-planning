@@ -225,8 +225,13 @@ def parse_model(model_file):
         if field == ":requirements":
             requirements = Requirements(opt[1:])
         elif field == ":types":
-            the_types.extend(parse_typed_list(
-                    opt[1:], constructor=Type))
+            types = parse_typed_list(
+                    opt[1:], constructor=Type)
+            
+            if types[0].name == the_types[0].name:
+                types[0].pop(0)
+            
+            the_types.extend(types)
         elif field == ":constants":
             constants = parse_typed_list(opt[1:])
         elif field == ":predicates":

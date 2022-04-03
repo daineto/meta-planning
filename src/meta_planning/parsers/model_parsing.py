@@ -229,7 +229,7 @@ def parse_model(model_file):
                     opt[1:], constructor=Type)
             
             if types[0].name == the_types[0].name:
-                types[0].pop(0)
+                types.pop(0)
             
             the_types.extend(types)
         elif field == ":constants":

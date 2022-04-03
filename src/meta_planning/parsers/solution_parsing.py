@@ -27,7 +27,7 @@ def build_model(pres, effs, initial_model):
 
             eff += [Effect([], Truth(), Literal(e[0],[arg.replace("var", "?o") for arg in e[1:]], valuation))]
 
-        learned_model.schemata += [Scheme(scheme.name, scheme.parameters, len(scheme.parameters), Conjunction(pre), eff, 0)]
+        learned_model.schemata += [Scheme(scheme.name, scheme.parameters, len(scheme.parameters), Conjunction(pre), eff, None)]
 
 
     return learned_model

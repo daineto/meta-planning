@@ -241,8 +241,8 @@ class LearningTask(ValidationTask):
     def __init__(self, initial_model, observations, allow_insertions=False, allow_deletions=False):
         ValidationTask.__init__(self, initial_model, observations, allow_insertions=True)
 
-    def learn(self, clean=True):
-        return self.validate(clean=clean)
+    def learn(self, clean= True, parallel= True, t= 3000):
+        return self.validate(clean= clean, parallel= parallel, t= t)
 
 
 class ModelRecognitionTask(object):

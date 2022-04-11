@@ -254,8 +254,8 @@ class ModelRecognitionTask(object):
         self.tasks = [ValidationTask(m, observations, allow_insertions=True, allow_deletions=True) for m in models]
 
 
-    def recognize(self):
-        solutions = [t.validate(parallel=False) for t in self.tasks]
+    def recognize(self, t= 3000):
+        solutions = [task.validate(parallel=False, t= t) for task in self.tasks]
         model_space_size = get_model_space_size(self.models[0])
 
         return ModelRecognitionSolution(solutions, self.priors, model_space_size)

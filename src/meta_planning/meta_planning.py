@@ -204,6 +204,7 @@ class ValidationTask(object):
                 cmd_args += ["-T %s" % max_horizon]
 
             cmd_args += ["> %s" % log_file]
+            cmd_args += ["2> /dev/null"]
 
         elif planner == "downward":
             planner_path = "/home/dieaigar/PhD/downward/fast-downward.py"
@@ -219,7 +220,6 @@ class ValidationTask(object):
         cmd = " ".join(cmd_args)
         cmd = "ulimit -t %d; " % t + cmd
 
-        print(cmd)
         os.system(cmd)
 
         solution = parse_solution(solution_file, self.initial_model, self.observations,
@@ -227,7 +227,7 @@ class ValidationTask(object):
 
 
         if clean:
-            cmd = "rm %s; rm %s; rm %s; rm %s" % (domain_file, problem_file, solution_file, log_file)
+            cmd = "rm %s; rm %s; rm %s 2> /dev/null; rm %s" % (domain_file, problem_file, solution_file, log_file)
             os.system(cmd)
 
 
@@ -254,8 +254,8 @@ class ModelRecognitionTask(object):
         self.tasks = [ValidationTask(m, observations, allow_insertions=True, allow_deletions=True) for m in models]
 
 
-    def recognize(self, suffix= None):
-        solutions = [t.validate(parallel=False, suffix= suffix) for t in self.tasks]
+    def recognize(self, t= 3000, suffix= None):
+        solutions = [task.validate(parallel=False, t= t, suffix= suffix) for task in self.tasks]
         model_space_size = get_model_space_size(self.models[0])
 
         return ModelRecognitionSolution(solutions, self.priors, model_space_size)

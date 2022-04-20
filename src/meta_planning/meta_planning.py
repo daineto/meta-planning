@@ -204,6 +204,7 @@ class ValidationTask(object):
                 cmd_args += ["-T %s" % max_horizon]
 
             cmd_args += ["> %s" % log_file]
+            cmd_args += ["2> /dev/null"]
 
         elif planner == "downward":
             planner_path = "/home/dieaigar/PhD/downward/fast-downward.py"
@@ -219,7 +220,6 @@ class ValidationTask(object):
         cmd = " ".join(cmd_args)
         cmd = "ulimit -t %d; " % t + cmd
 
-        print(cmd)
         os.system(cmd)
 
         solution = parse_solution(solution_file, self.initial_model, self.observations,
@@ -227,7 +227,7 @@ class ValidationTask(object):
 
 
         if clean:
-            cmd = "rm %s; rm %s; rm %s; rm %s" % (domain_file, problem_file, solution_file, log_file)
+            cmd = "rm %s; rm %s; rm %s 2> /dev/null; rm %s" % (domain_file, problem_file, solution_file, log_file)
             os.system(cmd)
 
 

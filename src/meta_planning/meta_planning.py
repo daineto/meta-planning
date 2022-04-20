@@ -175,11 +175,11 @@ class ValidationTask(object):
         return Problem("compiled_problem", self.initial_model.domain_name, objects, init, goal, use_metric=self.use_cost)
 
 
-    def validate(self, clean=True, parallel=True, planner="madagascar", t=3000):
-        problem_file = 'compiled_problem'
-        domain_file = 'compiled_domain'
-        solution_file = 'solution_plan'
-        log_file = "planner_out"
+    def validate(self, clean=True, parallel=True, planner="madagascar", t=3000, suffix= None):
+        problem_file = 'compiled_problem' + (suffix if suffix is not None else "")
+        domain_file = 'compiled_domain' + (suffix if suffix is not None else "")
+        solution_file = 'solution_plan' + (suffix if suffix is not None else "")
+        log_file = "planner_out" + (suffix if suffix is not None else "")
 
         self.compiled_model.to_file(domain_file)
         self.compiled_problem.to_file(problem_file)
@@ -241,8 +241,8 @@ class LearningTask(ValidationTask):
     def __init__(self, initial_model, observations, allow_insertions=False, allow_deletions=False):
         ValidationTask.__init__(self, initial_model, observations, allow_insertions=True)
 
-    def learn(self, clean=True):
-        return self.validate(clean=clean)
+    def learn(self, clean=True, suffix= None):
+        return self.validate(clean=clean, suffix= suffix)
 
 
 class ModelRecognitionTask(object):
@@ -254,8 +254,8 @@ class ModelRecognitionTask(object):
         self.tasks = [ValidationTask(m, observations, allow_insertions=True, allow_deletions=True) for m in models]
 
 
-    def recognize(self, t= 3000):
-        solutions = [task.validate(parallel=False, t= t) for task in self.tasks]
+    def recognize(self, t= 3000, suffix= None):
+        solutions = [task.validate(parallel=False, t= t, suffix= suffix) for task in self.tasks]
         model_space_size = get_model_space_size(self.models[0])
 
         return ModelRecognitionSolution(solutions, self.priors, model_space_size)

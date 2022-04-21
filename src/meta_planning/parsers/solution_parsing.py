@@ -41,26 +41,43 @@ def build_explanations(actions, cuts, observations, learned_model):
     parameters_dict = {scheme.name: scheme.parameters for scheme in learned_model.schemata}
 
     for i in range(len(cuts) - 1):
-        inferred_state_trajectory = []
         init = set(observations[i].states[0].literals)
-        inferred_state_trajectory.append(init)
+        lifted_inferred_trajectory = [init]
         subplan = actions[cuts[i]:cuts[i + 1]]
 
         for a in subplan:
+            pre_state = []
+
+            for literal in lifted_inferred_trajectory[-1]:
+                if set(literal.args).issubset(set(a.arguments)):
+                    args_indices = []
+
+                    for arg in literal.args:
+                        indices = [parameters_dict[a.name][j].name for j in range(len(a.arguments)) if a.arguments[j] == arg]
+                        args_indices.append(indices)
+
+                    for tup in itertools.product(*args_indices):
+                        pre_state.append(Literal(literal.predicate, list(tup), literal.valuation))
+
+            pre_state = State(pre_state, a)
             effects = copy.deepcopy(effects_dict[a.name])
 
             for j in range(len(a.arguments)):
-                for effect in effects:
-                    effect.literal = effect.literal.rename_variables({x: a.arguments[j] for x in effect.literal.args if x == parameters_dict[a.name][j].name})
+                arg = a.arguments[j]
+                par = parameters_dict[a.name][j].name
 
-            new_state = inferred_state_trajectory[-1]
+                for effect in effects:
+                    effect.literal = effect.literal.rename_variables({x: arg for x in effect.literal.args if x == par})
+
+            new_state = lifted_inferred_trajectory[-1]
             new_state = new_state.difference({effect.literal.flip() for effect in effects})
             new_state = new_state.union({effect.literal for effect in effects})
-            inferred_state_trajectory.append(new_state)
+            lifted_inferred_trajectory[-1] = pre_state
+            lifted_inferred_trajectory.append(new_state)
 
-        inferred_trajectory = [State(list(inferred_state_trajectory[j]), subplan[j] if j < len(subplan) else None) for j in range(len(inferred_state_trajectory))]
-        inferred_trajectory = Trajectory(observations[i].objects, inferred_trajectory)
-        explanations += [Explanation(Plan(subplan), observations[i], inferred_trajectory)]
+        lifted_inferred_trajectory[-1] = State(list(lifted_inferred_trajectory[-1]), None)
+        lifted_inferred_trajectory = Trajectory(observations[i].objects, lifted_inferred_trajectory)
+        explanations += [Explanation(Plan(subplan), observations[i], lifted_inferred_trajectory)]
 
     return explanations
 

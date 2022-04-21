@@ -40,10 +40,10 @@ def build_explanations(actions, cuts, observations, learned_model):
     effects_dict = {scheme.name: scheme.effects for scheme in learned_model.schemata}
     parameters_dict = {scheme.name: scheme.parameters for scheme in learned_model.schemata}
 
-    for i in range(len(cuts)-1):
-        inferred_state_trajectory = list()
-        init = observations[i].states[0].literals
-        inferred_state_trajectory.append(set(init))
+    for i in range(len(cuts) - 1):
+        inferred_state_trajectory = []
+        init = set(observations[i].states[0].literals)
+        inferred_state_trajectory.append(init)
         subplan = actions[cuts[i]:cuts[i + 1]]
 
         for a in subplan:
@@ -51,7 +51,7 @@ def build_explanations(actions, cuts, observations, learned_model):
 
             for j in range(len(a.arguments)):
                 for effect in effects:
-                    effect.literal = effect.literal.rename_variables({x: a.arguments[j] if x == parameters_dict[a.name][j].name else x for x in effect.literal.args})
+                    effect.literal = effect.literal.rename_variables({x: a.arguments[j] for x in effect.literal.args if x == parameters_dict[a.name][j].name})
 
             new_state = inferred_state_trajectory[-1]
             new_state = new_state.difference({effect.literal.flip() for effect in effects})

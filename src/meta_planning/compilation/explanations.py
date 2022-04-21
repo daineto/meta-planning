@@ -1,7 +1,7 @@
 
 class Explanation(object):
 
-    def __init__(self, plan, observation, trajectory):
+    def __init__(self, plan, observation, inferred_trajectory):
         self.plan = plan
         self.observation = observation
-        self.trajectory = trajectory
+        self.inferred_trajectory = inferred_trajectory

@@ -1,6 +1,7 @@
 from ..pddl import Scheme, Effect, Literal, Truth, Conjunction, Plan, Action
 from ..compilation import FoundSolution, NoSolution
 from ..compilation import Explanation
+from ..observations import State, Trajectory
 
 import copy
 
@@ -33,12 +34,33 @@ def build_model(pres, effs, initial_model):
     return learned_model
 
 
-def build_explanations(actions, cuts, observations):
+def build_explanations(actions, cuts, observations, learned_model):
 
     explanations = []
+    effects_dict = {scheme.name: scheme.effects for scheme in learned_model.schemata}
+    parameters_dict = {scheme.name: scheme.parameters for scheme in learned_model.schemata}
 
     for i in range(len(cuts)-1):
-        explanations += [Explanation(Plan(actions[cuts[i]: cuts[i+1]]), observations[i])]
+        inferred_state_trajectory = list()
+        init = observations[i].states[0].literals
+        inferred_state_trajectory.append(set(init))
+        subplan = actions[cuts[i]:cuts[i + 1]]
+
+        for a in subplan:
+            effects = copy.deepcopy(effects_dict[a.name])
+
+            for j in range(len(a.arguments)):
+                for effect in effects:
+                    effect.literal = effect.literal.rename_variables({x: a.arguments[j] if x == parameters_dict[a.name][j].name else x for x in effect.literal.args})
+
+            new_state = inferred_state_trajectory[-1]
+            new_state = new_state.difference({effect.literal.flip() for effect in effects})
+            new_state = new_state.union({effect.literal for effect in effects})
+            inferred_state_trajectory.append(new_state)
+
+        inferred_state_trajectory = [State(list(inferred_state_trajectory[j]), subplan[j] if j < len(subplan) else None) for j in range(len(inferred_state_trajectory))]
+        trajectory = Trajectory(observations[i].objects, inferred_state_trajectory)
+        explanations += [Explanation(Plan(subplan), observations[i], trajectory)]
 
     return explanations
 
@@ -149,6 +171,6 @@ def parse_solution(solution_file, initial_model, observations, known_model):
 
     learned_model = build_model(pres, effs, initial_model)
 
-    explanations += build_explanations(regular_actions, cuts, observations)
+    explanations += build_explanations(regular_actions, cuts, observations, learned_model)
 
     return FoundSolution(plan, learned_model, edition_distance, explanations)

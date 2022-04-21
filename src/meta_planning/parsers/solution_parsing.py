@@ -58,9 +58,9 @@ def build_explanations(actions, cuts, observations, learned_model):
             new_state = new_state.union({effect.literal for effect in effects})
             inferred_state_trajectory.append(new_state)
 
-        inferred_state_trajectory = [State(list(inferred_state_trajectory[j]), subplan[j] if j < len(subplan) else None) for j in range(len(inferred_state_trajectory))]
-        trajectory = Trajectory(observations[i].objects, inferred_state_trajectory)
-        explanations += [Explanation(Plan(subplan), observations[i], trajectory)]
+        inferred_trajectory = [State(list(inferred_state_trajectory[j]), subplan[j] if j < len(subplan) else None) for j in range(len(inferred_state_trajectory))]
+        inferred_trajectory = Trajectory(observations[i].objects, inferred_trajectory)
+        explanations += [Explanation(Plan(subplan), observations[i], inferred_trajectory)]
 
     return explanations
 

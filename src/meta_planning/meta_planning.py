@@ -175,11 +175,11 @@ class ValidationTask(object):
         return Problem("compiled_problem", self.initial_model.domain_name, objects, init, goal, use_metric=self.use_cost)
 
 
-    def validate(self, clean=True, parallel=True, planner="madagascar", t=3000, lifted_inferred_trajectories= None):
-        problem_file = 'compiled_problem'
-        domain_file = 'compiled_domain'
-        solution_file = 'solution_plan'
-        log_file = "planner_out"
+    def validate(self, clean=True, parallel=True, planner="madagascar", t=3000, suffix= None, lifted_inferred_trajectories= None):
+        problem_file = 'compiled_problem' + (suffix if suffix is not None else "")
+        domain_file = 'compiled_domain' + (suffix if suffix is not None else "")
+        solution_file = 'solution_plan' + (suffix if suffix is not None else "")
+        log_file = "planner_out" + (suffix if suffix is not None else "")
 
         self.compiled_model.to_file(domain_file)
         self.compiled_problem.to_file(problem_file)
@@ -204,6 +204,7 @@ class ValidationTask(object):
                 cmd_args += ["-T %s" % max_horizon]
 
             cmd_args += ["> %s" % log_file]
+            cmd_args += ["2> /dev/null"]
 
         elif planner == "downward":
             planner_path = "/home/dieaigar/PhD/downward/fast-downward.py"
@@ -219,7 +220,6 @@ class ValidationTask(object):
         cmd = " ".join(cmd_args)
         cmd = "ulimit -t %d; " % t + cmd
 
-        print(cmd)
         os.system(cmd)
 
         solution = parse_solution(solution_file, self.initial_model, self.observations,
@@ -227,7 +227,7 @@ class ValidationTask(object):
 
 
         if clean:
-            cmd = "rm %s; rm %s; rm %s; rm %s" % (domain_file, problem_file, solution_file, log_file)
+            cmd = "rm %s; rm %s; rm %s 2> /dev/null; rm %s" % (domain_file, problem_file, solution_file, log_file)
             os.system(cmd)
 
 
@@ -241,8 +241,8 @@ class LearningTask(ValidationTask):
     def __init__(self, initial_model, observations, allow_insertions=False, allow_deletions=False):
         ValidationTask.__init__(self, initial_model, observations, allow_insertions=True)
 
-    def learn(self, clean=True, lifted_inferred_trajectories= None):
-        return self.validate(clean=clean, lifted_inferred_trajectories= lifted_inferred_trajectories)
+    def learn(self, clean=True, suffix= None, lifted_inferred_trajectories= None):
+        return self.validate(clean=clean, suffix= suffix, lifted_inferred_trajectories= lifted_inferred_trajectories)
 
 
 class ModelRecognitionTask(object):
@@ -254,8 +254,8 @@ class ModelRecognitionTask(object):
         self.tasks = [ValidationTask(m, observations, allow_insertions=True, allow_deletions=True) for m in models]
 
 
-    def recognize(self, lifted_inferred_trajectories= None):
-        solutions = [t.validate(parallel=False, lifted_inferred_trajectories= lifted_inferred_trajectories) for t in self.tasks]
+    def recognize(self, t= 3000, suffix= None, lifted_inferred_trajectories= None):
+        solutions = [task.validate(parallel=False, t= t, suffix= suffix, lifted_inferred_trajectories= lifted_inferred_trajectories) for task in self.tasks]
         model_space_size = get_model_space_size(self.models[0])
 
         return ModelRecognitionSolution(solutions, self.priors, model_space_size)

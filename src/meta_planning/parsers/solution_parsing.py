@@ -193,7 +193,7 @@ def parse_solution(solution_file, initial_model, observations, known_model, lift
     if lifted_inferred_trajectories is None:
         lifted_inferred_trajectories = []
 
-    lifted_inferred_trajectories += [explanation.lifted_inferred_trajectory for explanation in explanations]
+    lifted_inferred_trajectories = lifted_inferred_trajectories + [explanation.lifted_inferred_trajectory for explanation in explanations]
     pre_states = {}
 
     for lifted_inferred_trajectory in lifted_inferred_trajectories:

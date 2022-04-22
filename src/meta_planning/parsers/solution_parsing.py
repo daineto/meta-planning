@@ -4,6 +4,7 @@ from ..compilation import Explanation
 from ..observations import State, Trajectory
 
 import copy
+import itertools
 
 def build_model(pres, effs, initial_model):
 

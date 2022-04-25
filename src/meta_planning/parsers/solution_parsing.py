@@ -38,7 +38,7 @@ def build_model(pres, effs, initial_model):
 def build_explanations(actions, cuts, observations, learned_model):
 
     explanations = []
-    effects_dict = {scheme.name: scheme.effects for scheme in learned_model.schemata}
+    effects_dict = {scheme.name: [effect.literal for effect in scheme.effects] for scheme in learned_model.schemata}
     parameters_dict = {scheme.name: scheme.parameters for scheme in learned_model.schemata}
 
     for i in range(len(cuts) - 1):
@@ -67,12 +67,12 @@ def build_explanations(actions, cuts, observations, learned_model):
                 arg = a.arguments[j]
                 par = parameters_dict[a.name][j].name
 
-                for effect in effects:
-                    effect.literal = effect.literal.rename_variables({x: arg for x in effect.literal.args if x == par})
+                for k in range(len(effects)):
+                    effects[k] = effects[k].rename_variables({x: arg for x in effects[k].args if x == par})
 
             new_state = lifted_inferred_trajectory[-1]
-            new_state = new_state.difference({effect.literal.flip() for effect in effects})
-            new_state = new_state.union({effect.literal for effect in effects})
+            new_state = new_state.difference({effect.flip() for effect in effects})
+            new_state = new_state.union(effects)
             lifted_inferred_trajectory[-1] = pre_state
             lifted_inferred_trajectory.append(new_state)
 
@@ -206,7 +206,9 @@ def parse_solution(solution_file, initial_model, observations, known_model, lift
                 pre_states_list.append(set(pre_state.literals))
                 pre_states[action.name] = pre_states_list
 
-    action_names = [a.name for a in learned_model.schemata]
+    schemata_dict = {scheme.name: scheme for scheme in learned_model.schemata}
+    effects_dict = {scheme.name: [effect.literal for effect in scheme.effects] for scheme in learned_model.schemata}
+    preconditions_dict = {scheme.name: list(scheme.precondition.parts) for scheme in learned_model.schemata}
 
     for k, v in pre_states.items():
         new_preconditions = v[0]
@@ -216,12 +218,10 @@ def parse_solution(solution_file, initial_model, observations, known_model, lift
 
         if len(new_preconditions) > 0:
             new_preconditions = sorted(new_preconditions)
-            indexa = action_names.index(k)
-            learned_pres = list(learned_model.schemata[indexa].precondition.parts)
-            new_preconditions = [pre for pre in new_preconditions if pre not in learned_pres]
+            new_preconditions = [pre for pre in new_preconditions if pre not in preconditions_dict[k] and pre.flip() not in preconditions_dict[k] and pre.positive() not in effects_dict[k]]
 
             if len(new_preconditions) > 0:
-                learned_model.schemata[indexa].precondition = Conjunction(learned_pres + new_preconditions)
+                schemata_dict[k].precondition = Conjunction(preconditions_dict[k] + new_preconditions)
                 edition_distance += len(new_preconditions)
 
     return FoundSolution(plan, learned_model, edition_distance, explanations)

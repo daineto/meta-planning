@@ -48,4 +48,3 @@ class ModelRecognitionSolution(object):
 
     def __normalize_posteriors(self):
         return [self.posteriors[i]/sum(self.posteriors) for i in range(len(self.posteriors))]
-

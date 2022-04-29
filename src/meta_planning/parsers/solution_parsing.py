@@ -1,8 +1,10 @@
 from ..pddl import Scheme, Effect, Literal, Truth, Conjunction, Plan, Action
 from ..compilation import FoundSolution, NoSolution
 from ..compilation import Explanation
+from ..observations import State, Trajectory
 
 import copy
+import itertools
 
 def build_model(pres, effs, initial_model):
 
@@ -33,12 +35,50 @@ def build_model(pres, effs, initial_model):
     return learned_model
 
 
-def build_explanations(actions, cuts, observations):
+def build_explanations(actions, cuts, observations, learned_model):
 
     explanations = []
+    effects_dict = {scheme.name: [effect.literal for effect in scheme.effects] for scheme in learned_model.schemata}
+    parameters_dict = {scheme.name: scheme.parameters for scheme in learned_model.schemata}
 
-    for i in range(len(cuts)-1):
-        explanations += [Explanation(Plan(actions[cuts[i]: cuts[i+1]]), observations[i])]
+    for i in range(len(cuts) - 1):
+        init = set(observations[i].states[0].literals)
+        lifted_inferred_trajectory = [init]
+        subplan = actions[cuts[i]:cuts[i + 1]]
+
+        for a in subplan:
+            pre_state = []
+
+            for literal in lifted_inferred_trajectory[-1]:
+                if set(literal.args).issubset(set(a.arguments)):
+                    args_indices = []
+
+                    for arg in literal.args:
+                        indices = [parameters_dict[a.name][j].name for j in range(len(a.arguments)) if a.arguments[j] == arg]
+                        args_indices.append(indices)
+
+                    for tup in itertools.product(*args_indices):
+                        pre_state.append(Literal(literal.predicate, list(tup), literal.valuation))
+
+            pre_state = State(pre_state, a)
+            effects = copy.deepcopy(effects_dict[a.name])
+
+            for j in range(len(a.arguments)):
+                arg = a.arguments[j]
+                par = parameters_dict[a.name][j].name
+
+                for k in range(len(effects)):
+                    effects[k] = effects[k].rename_variables({x: arg for x in effects[k].args if x == par})
+
+            new_state = lifted_inferred_trajectory[-1]
+            new_state = new_state.difference({effect.flip() for effect in effects})
+            new_state = new_state.union(effects)
+            lifted_inferred_trajectory[-1] = pre_state
+            lifted_inferred_trajectory.append(new_state)
+
+        lifted_inferred_trajectory[-1] = State(list(lifted_inferred_trajectory[-1]), None)
+        lifted_inferred_trajectory = Trajectory(observations[i].objects, lifted_inferred_trajectory)
+        explanations += [Explanation(Plan(subplan), observations[i], lifted_inferred_trajectory)]
 
     return explanations
 
@@ -69,7 +109,7 @@ def parse_plan(plan_file):
 
 
 
-def parse_solution(solution_file, initial_model, observations, known_model):
+def parse_solution(solution_file, initial_model, observations, known_model, lifted_inferred_trajectories= None):
 
     observations_contain_actions = any([o.has_actions() for o in observations])
 
@@ -149,6 +189,39 @@ def parse_solution(solution_file, initial_model, observations, known_model):
 
     learned_model = build_model(pres, effs, initial_model)
 
-    explanations += build_explanations(regular_actions, cuts, observations)
+    explanations += build_explanations(regular_actions, cuts, observations, learned_model)
+
+    if lifted_inferred_trajectories is None:
+        lifted_inferred_trajectories = []
+
+    lifted_inferred_trajectories = lifted_inferred_trajectories + [explanation.lifted_inferred_trajectory for explanation in explanations]
+    pre_states = {}
+
+    for lifted_inferred_trajectory in lifted_inferred_trajectories:
+        for pre_state in lifted_inferred_trajectory.states:
+            action = pre_state.next_action
+
+            if action is not None:
+                pre_states_list = pre_states.get(action.name, [])
+                pre_states_list.append(set(pre_state.literals))
+                pre_states[action.name] = pre_states_list
+
+    schemata_dict = {scheme.name: scheme for scheme in learned_model.schemata}
+    effects_dict = {scheme.name: [effect.literal for effect in scheme.effects] for scheme in learned_model.schemata}
+    preconditions_dict = {scheme.name: list(scheme.precondition.parts) for scheme in learned_model.schemata}
+
+    for k, v in pre_states.items():
+        new_preconditions = v[0]
+
+        for pre_state in v[1:]:
+            new_preconditions = new_preconditions.intersection(pre_state)
+
+        if len(new_preconditions) > 0:
+            new_preconditions = sorted(new_preconditions)
+            new_preconditions = [pre for pre in new_preconditions if pre not in preconditions_dict[k] and pre.flip() not in preconditions_dict[k] and pre.positive() not in effects_dict[k]]
+
+            if len(new_preconditions) > 0:
+                schemata_dict[k].precondition = Conjunction(preconditions_dict[k] + new_preconditions)
+                edition_distance += len(new_preconditions)
 
     return FoundSolution(plan, learned_model, edition_distance, explanations)

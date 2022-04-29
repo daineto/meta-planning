@@ -19,7 +19,7 @@ def build_model(pres, effs, initial_model):
 
         for p in pres[name]:
             p = list(p)
-            pre += [Literal(p[0], [scheme.parameters[int(arg.replace("var", "")) - 1].name for arg in p[1:]], True)]
+            pre += [Literal(p[0], [arg.replace("var", "?o") for arg in p[1:]], True)]
 
         for e in effs[name]:
             if e in pres[name]:
@@ -27,9 +27,9 @@ def build_model(pres, effs, initial_model):
             else:
                 valuation = True
 
-            eff += [Effect([], Truth(), Literal(e[0],[scheme.parameters[int(arg.replace("var", "")) - 1].name for arg in e[1:]], valuation))]
+            eff += [Effect([], Truth(), Literal(e[0],[arg.replace("var", "?o") for arg in e[1:]], valuation))]
 
-        learned_model.schemata += [Scheme(scheme.name, scheme.parameters, len(scheme.parameters), Conjunction(pre), eff, None)]
+        learned_model.schemata += [Scheme(scheme.name, scheme.parameters, len(scheme.parameters), Conjunction(pre), eff, 0)]
 
 
     return learned_model
@@ -190,7 +190,7 @@ def parse_solution(solution_file, initial_model, observations, known_model, lift
     learned_model = build_model(pres, effs, initial_model)
 
     explanations += build_explanations(regular_actions, cuts, observations, learned_model)
-    
+
     if lifted_inferred_trajectories is None:
         lifted_inferred_trajectories = []
 
